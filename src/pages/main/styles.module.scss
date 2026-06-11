@@ -1,0 +1,33 @@
+.container {
+    position: relative;
+    display: inline-block;
+}
+
+.image {
+    display: block;
+    width: 500px;
+    cursor: pointer;
+}
+
+.marker {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.start {
+    text-align: center;
+}
+
+.finish {
+    text-align: center;
+    margin-top: 100px;
+}
+
+.progress {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
