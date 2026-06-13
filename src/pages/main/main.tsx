@@ -12,6 +12,7 @@ export const Main = () => {
   const [mark, setMark] = useState<{ x: number; y: number } | null>(null);
 
   const image = images[level];
+  const { PUBLIC_URL } = process.env;
 
   const handleClick = (event: React.MouseEvent<HTMLImageElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -36,31 +37,52 @@ export const Main = () => {
 
   if (level >= images.length) {
     return (
-      <div className={styles.finish}>
-        <h1>🎉 Ура! Ты нашла все пасхалки!</h1>
+      <div
+        className={`${styles.screen} ${styles.finish}`}
+        style={
+          {
+            '--bg-image': `url(${PUBLIC_URL}/assets/images/win.png)`,
+          } as React.CSSProperties
+        }
+      >
+        <img src={`${PUBLIC_URL}/assets/images/win.png`} className={styles.image} alt="" />
       </div>
     );
   }
 
   if (!started) {
     return (
-      <div className={styles.start}>
-        <h1>Найди все пасхалки 🐣</h1>
+      <div
+        className={`${styles.screen} ${styles.start}`}
+        style={
+          {
+            '--bg-image': `url(${PUBLIC_URL}/assets/images/start.png)`,
+          } as React.CSSProperties
+        }
+      >
+        <img src={`${PUBLIC_URL}/assets/images/start.png`} className={styles.image} alt="" />
 
-        <img src={'/assets/images/start.png'} onClick={handleClick} className={styles.image} alt={''} />
-
-        <button onClick={() => setStarted(true)}>Начать</button>
+        <button className={styles.button} onClick={() => setStarted(true)}>
+          Спасти дядю Айро
+        </button>
       </div>
     );
   }
 
   return (
-    <div className={styles.container}>
+    <div
+      className={`${styles.screen} ${styles.container}`}
+      style={
+        {
+          '--bg-image': `url(${image.src})`,
+        } as React.CSSProperties
+      }
+    >
       <div className={styles.progress}>
         {level + 1} / {images.length}
       </div>
 
-      <img src={image.src} onClick={handleClick} className={styles.image} alt={''} />
+      <img src={image.src} onClick={handleClick} className={styles.image} alt="" />
 
       {mark && (
         <div
