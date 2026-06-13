@@ -81,19 +81,19 @@ export const Main = () => {
       <div className={styles.progress}>
         {level + 1} / {images.length}
       </div>
-
-      <img src={image.src} onClick={handleClick} className={styles.image} alt="" />
-
-      {mark && (
-        <div
-          className={styles.marker}
-          style={{
-            left: `${mark.x}%`,
-            top: `${mark.y}%`,
-            border: `4px solid ${isSuccess ? 'green' : 'red'}`,
-          }}
-        />
-      )}
+      <div className={styles.imageWrapper}>
+        <img src={image.src} onClick={handleClick} className={styles.image} alt="" />
+        {mark && (
+          <div
+            className={styles.marker}
+            style={{
+              left: `${mark.x}%`,
+              top: `${mark.y}%`,
+              border: `4px solid ${isSuccess ? 'green' : 'red'}`,
+            }}
+          />
+        )}
+      </div>
     </div>
   );
 };
