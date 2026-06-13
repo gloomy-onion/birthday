@@ -4,34 +4,57 @@ import styles from './styles.module.scss';
 
 const HIT_RADIUS = 10;
 
+interface Particle {
+  id: number;
+  x: number;
+  y: number;
+  emoji: string;
+  dx: number;
+  dy: number;
+}
+
 export const Main = () => {
   const [started, setStarted] = useState(false);
   const [level, setLevel] = useState(0);
-
   const [isSuccess, setIsSuccess] = useState<boolean | null>(null);
   const [mark, setMark] = useState<{ x: number; y: number } | null>(null);
+  const [shaking, setShaking] = useState(false);
+  const [particles, setParticles] = useState<Particle[]>([]);
 
   const image = images[level];
   const { PUBLIC_URL } = process.env;
 
   const handleClick = (event: React.MouseEvent<HTMLImageElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
-
     const x = ((event.clientX - rect.left) / rect.width) * 100;
     const y = ((event.clientY - rect.top) / rect.height) * 100;
 
     setMark({ x, y });
 
     const hit = Math.abs(x - image.eggX) < HIT_RADIUS && Math.abs(y - image.eggY) < HIT_RADIUS;
-
     setIsSuccess(hit);
 
     if (hit) {
+      const emojis = ['🌟', '✨', '⭐', '💛'];
+      const newParticles: Particle[] = Array.from({ length: 10 }, (_, i) => ({
+        id: Date.now() + i,
+        x,
+        y,
+        emoji: emojis[Math.floor(Math.random() * emojis.length)],
+        dx: (Math.random() - 0.5) * 50,
+        dy: -(Math.random() * 60 + 4),
+      }));
+      setParticles(newParticles);
+
       setTimeout(() => {
         setMark(null);
         setIsSuccess(null);
+        setParticles([]);
         setLevel((prev) => prev + 1);
-      }, 600);
+      }, 900);
+    } else {
+      setShaking(true);
+      setTimeout(() => setShaking(false), 500);
     }
   };
 
@@ -72,27 +95,35 @@ export const Main = () => {
   return (
     <div
       className={`${styles.screen} ${styles.container}`}
-      style={
-        {
-          '--bg-image': `url(${image.src})`,
-        } as React.CSSProperties
-      }
+      style={{ '--bg-image': `url(${image.src})` } as React.CSSProperties}
     >
       <div className={styles.progress}>
         {level + 1} / {images.length}
       </div>
-      <div className={styles.imageWrapper}>
+      <div className={`${styles.imageWrapper} ${shaking ? styles.shake : ''}`}>
         <img src={image.src} onClick={handleClick} className={styles.image} alt="" />
         {mark && (
           <div
-            className={styles.marker}
-            style={{
-              left: `${mark.x}%`,
-              top: `${mark.y}%`,
-              border: `4px solid ${isSuccess ? 'green' : 'red'}`,
-            }}
+            className={`${styles.marker} ${isSuccess ? styles.markerHit : styles.markerMiss}`}
+            style={{ left: `${mark.x}%`, top: `${mark.y}%` }}
           />
         )}
+        {particles.map((p) => (
+          <div
+            key={p.id}
+            className={styles.particle}
+            style={
+              {
+                left: `${p.x}%`,
+                top: `${p.y}%`,
+                '--dx': `${p.dx}vw`,
+                '--dy': `${p.dy}vh`,
+              } as React.CSSProperties
+            }
+          >
+            {p.emoji}
+          </div>
+        ))}
       </div>
     </div>
   );
