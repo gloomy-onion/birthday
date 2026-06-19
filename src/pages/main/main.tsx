@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { images } from '../../shared';
 import styles from './styles.module.scss';
 
-const HIT_RADIUS = 10;
+const HIT_RADIUS = 4;
 
 interface Particle {
   id: number;
@@ -23,6 +23,21 @@ export const Main = () => {
 
   const image = images[level];
   const { PUBLIC_URL } = process.env;
+
+  useEffect(() => {
+    [`${PUBLIC_URL}/assets/images/start.png`, `${PUBLIC_URL}/assets/images/win.png`].forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, [PUBLIC_URL]);
+
+  useEffect(() => {
+    const next = images[level + 1];
+    if (next) {
+      const img = new Image();
+      img.src = next.src;
+    }
+  }, [level]);
 
   const handleClick = (event: React.MouseEvent<HTMLImageElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
