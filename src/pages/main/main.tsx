@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { images } from '../../shared';
 import styles from './styles.module.scss';
 
-const HIT_RADIUS = 4;
+const HIT_RADIUS = 6;
 
 interface Particle {
   id: number;
@@ -25,7 +25,13 @@ export const Main = () => {
   const { PUBLIC_URL } = process.env;
 
   useEffect(() => {
-    [`${PUBLIC_URL}/assets/images/start.png`, `${PUBLIC_URL}/assets/images/win.png`].forEach((src) => {
+    const initialSrcs = [
+      `${PUBLIC_URL}/assets/images/start.png`,
+      `${PUBLIC_URL}/assets/images/win.png`,
+      images[0]?.src,
+    ].filter(Boolean) as string[];
+
+    initialSrcs.forEach((src) => {
       const img = new Image();
       img.src = src;
     });
